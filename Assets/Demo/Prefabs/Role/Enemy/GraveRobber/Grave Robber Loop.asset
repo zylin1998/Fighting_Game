@@ -1,0 +1,23 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f61e807f931114499d88a4db2408bd6, type: 3}
+  m_Name: Grave Robber Loop
+  m_EditorClassIdentifier: 
+  _SpaceTime: 1
+  _Loops:
+  - _LoopType: 1
+    _List: []
+  - _LoopType: 2
+    _List:
+    - Attack 1
+    - Attack 2
+    - Attack 3
