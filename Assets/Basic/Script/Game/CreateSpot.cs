@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using Custom.Role;
 
-namespace Custom.Battle
+namespace Custom
 {
     public class CreateSpot : MonoBehaviour, ISpot
     {
@@ -24,4 +24,5 @@ namespace Custom.Battle
         public Vector3 Position { get; }
         public Quaternion Rotation { get; }
         public IFlipAction.EFlipSide FlipSide { get; }
-    } }
+    } 
+}

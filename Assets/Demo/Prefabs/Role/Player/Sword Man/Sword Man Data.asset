@@ -12,19 +12,33 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 715beccb110dc6e439e639bce0330074, type: 3}
   m_Name: Sword Man Data
   m_EditorClassIdentifier: 
-  _RoleName: Sword Man
-  _Exp:
-    _Init: 255
-    _Slope: 25
-  _HP:
-    _Init: 150
-    _Slope: 15
-  _MP:
-    _Init: 100
-    _Slope: 10
-  _Damage:
-    _Init: 25
-    _Slope: 10
-  _Defend:
-    _Init: 20
-    _Slope: 5
+  _ID: Sword Man
+  _PropetyGroups:
+  - _GroupName: Level
+    _Properties:
+    - _PropertyName: Level
+      _Init: 1
+      _Slope: 100
+      _FillAmount: 1
+    - _PropertyName: Exp
+      _Init: 250
+      _Slope: 50
+      _FillAmount: 0
+  - _GroupName: Health
+    _Properties:
+    - _PropertyName: HP
+      _Init: 150
+      _Slope: 25
+      _FillAmount: 1
+    - _PropertyName: MP
+      _Init: 100
+      _Slope: 15
+      _FillAmount: 1
+    - _PropertyName: Damage
+      _Init: 25
+      _Slope: 20
+      _FillAmount: 1
+    - _PropertyName: Defend
+      _Init: 15
+      _Slope: 10
+      _FillAmount: 1

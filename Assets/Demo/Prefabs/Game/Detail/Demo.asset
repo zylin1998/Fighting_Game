@@ -1,0 +1,26 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b6624afdf1e04f94583efc54ab4c82b4, type: 3}
+  m_Name: Demo
+  m_EditorClassIdentifier: 
+  _Rule: {fileID: 11400000, guid: a1bfc6643cf0d1249be099d02bac6f05, type: 2}
+  _Reward: {fileID: 11400000, guid: 1ec40af2ad624a044b98123af0d405f9, type: 2}
+  _Requires: {fileID: 11400000, guid: 1aa4eb3bc398900429efe1a8854a3ca8, type: 2}
+  _Enemies:
+  - _Role: Grave Robber
+    _EnemyType: 1
+    _Level: 3
+  _GameActions:
+  - {fileID: 11400000, guid: 621ee5c4f6f82064d88177138f0a6c96, type: 2}
+  - {fileID: 11400000, guid: 0c9a568dead6cd44d86b90d29690bab3, type: 2}
+  - {fileID: 11400000, guid: 727af82b652a48b4a9a5aefaa5a5e749, type: 2}
+  - {fileID: 11400000, guid: 38185f847b6848441aa5e5e37436d55c, type: 2}

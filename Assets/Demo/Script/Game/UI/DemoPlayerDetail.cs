@@ -4,7 +4,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using Custom;
 using Custom.Role;
-using Custom.Battle;
+using Custom.Events;
 
 namespace FightingGameDemo
 {
@@ -24,27 +24,42 @@ namespace FightingGameDemo
 
         public void BarUpdate(Image bar, RoleBasic role) 
         {
-            if (role.Health is Health health) 
-            {
-                this._HPBar.fillAmount = health.NormalizeHP;
-            }
+            this._HPBar.fillAmount = role.RoleProperty["Health"]["HP"].Normalized;
         }
 
         public void LevelUpdate(RoleBasic role) 
         {
-            this._Level.text = string.Format("Lv.{0, 3}", role.Level.Level);
+            this._Level.text = string.Format("Lv.{0, 3}", role.RoleProperty["Level"]["Level"].Value);
         }
 
         #region IBeginClient
 
         public void BeforeBegin() 
         {
-            BattleManager.AddEvent(BattleManager.BattleEvent.EEventType.PlayerHurt, (role) => this.BarUpdate(this._HPBar, role));
-            BattleManager.AddEvent(BattleManager.BattleEvent.EEventType.PlayerUpgrade, (role) => this.LevelUpdate(role));
+            EventManager.AddEvent("Ally Hurt", (variable) => 
+            {
+                if (variable is PropertyVariable health)
+                {
+                    this.BarUpdate(this._HPBar, health.To);
+                }
+            });
+            EventManager.AddEvent("Ally Upgrade", (variable) =>
+            {
+                if (variable is PropertyVariable health)
+                {
+                    this.LevelUpdate(health.To);
+                }
+            });
+
+            this._Level.text = string.Format("Lv.{0, 3}", 1);
         }
 
-        public void BeginAction() { }
+        public void BeginAction() 
+        {
+            LevelUpdate(DemoBattleRule.Player);
+        }
 
         #endregion
+
     }
 }

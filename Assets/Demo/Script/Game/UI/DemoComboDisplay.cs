@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Custom;
-using Custom.Battle;
+using Custom.Events;
 
 namespace FightingGameDemo
 {
@@ -12,7 +12,7 @@ namespace FightingGameDemo
         [SerializeField]
         private Text _Combo;
 
-        private DemoBattleDetail detail;
+        private IGameDetail detail;
 
         private void Awake()
         {
@@ -30,17 +30,21 @@ namespace FightingGameDemo
 
         public void BeforeBegin()
         {
-            if (BattleManager.Detail is DemoBattleDetail detail)
+            if (EventManager.Detail is DemoBattleDetail detail)
             {
                 this.detail = detail;
-                this.detail.OnComboChange += (combo) => this.ComboUpdate(combo);
-                this.detail.ComboTimer.EndCallBack += (time) => this.gameObject.SetActive(false);
+                var combo = this.detail.GetAction<ComboAction>();
+
+                combo.OnComboChange += (combo) => this.ComboUpdate(combo);
+                combo.Timer.EndCallBack += (time) => this.gameObject.SetActive(false);
             }
+
+            this.gameObject.SetActive(false);
         }
 
         public void BeginAction() 
         {
-            this.gameObject.SetActive(false);
+            
         }
 
         #endregion

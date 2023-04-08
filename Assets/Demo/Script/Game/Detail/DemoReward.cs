@@ -1,7 +1,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Custom.Battle;
+using Custom.Role;
+using Custom.Events;
 using Custom.DataPacked;
 
 namespace FightingGameDemo
@@ -16,16 +17,11 @@ namespace FightingGameDemo
 
         public override void GetReward()
         {
-            BattleManager.Allies.ForEach(p => 
-            {
-                if (p.Level is Custom.Role.LevelState level) 
-                {
-                    if (level.GetExp(this)) 
-                    {
-                        BattleManager.EventInvoke(BattleManager.BattleEvent.EEventType.PlayerUpgrade, p);
-                    }
-                }
-            });
+            var player = DemoBattleRule.Player;
+
+            player.SetData<IGetExp>(this);
+            
+            EventManager.EventInvoke("Ally Upgrade", new RoleVariable(player));
         }
 
         public IPack Packed<TData>(TData data)

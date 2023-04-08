@@ -1,22 +1,21 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using Custom;
 using Custom.Role;
-using Custom.Battle;
 
 namespace FightingGameDemo.Role
 {
-    public class GraveRobber : Enemy
+    public class GraveRobber : RoleBasic
     {
         private void Awake()
         {
             this.Rigidbody = this.GetComponent<Rigidbody2D>();
             this.Animator = this.GetComponentInChildren<Animator>();
+            this._Team = this.GetComponent<RoleTeam>();
+            this.Data = RoleStorage.GetData(this._RoleName);
 
             if (this.Animator) { this.AnimCheck = new AnimationCheck(this.Animator); }
-
-            this._TeamState = IRole.ETeamState.Enemy;
-            this.gameObject.layer = LayerMask.NameToLayer("Enemy");
         }
 
         #region IMoveAction
@@ -48,10 +47,11 @@ namespace FightingGameDemo.Role
 
         #region IHurtAction
 
-        public override void Hurt()
+        public override void Hurt(PropertyVariable variable)
         {
-            if (this.IsDead) { this.Death(); }
+            base.Hurt(variable);
 
+            if (this.IsDead) { return; }
             if (this.HurtState) { return; }
 
             var animState = "Hurt";
@@ -79,51 +79,13 @@ namespace FightingGameDemo.Role
 
         #endregion
 
-        #region IDeathAction
-
-        public override void Death() 
-        {
-            if (!this.IsDead) { return; }
-
-            var animState = "Death";
-            this.Animator.Play(animState);
-            this.HurtState = true;
-
-            var enumerator = AnimCheck?.AnimationEvent(
-                  animState
-                , () => BattleManager.RoleSlaved(this, this._TeamState)
-                , () => RolePool.Recycle(this, IRole.ETeamState.Enemy));
-
-            StartCoroutine(enumerator);
-        }
-
-        #endregion
-
         #region IPoolItem
-
-        public override void Spawn<TData>(TData data)
-        {
-            if (data is EnemySpawn spawn) 
-            {
-                if (!this.Data) { this.Data = RoleStorage.GetData(this.ID); }
-
-                var value = this.Data.GetValue(spawn.Level);
-
-                this._Level = new LevelState(value, value, this.Data.Exp);
-                this._Health = new Health(value, value);
-                
-                this.transform.position = spawn.Position;
-                this.transform.rotation = spawn.Rotation;
-                this.Flip(spawn.FlipSide);
-                this.gameObject.SetActive(true);
-            }
-        }
 
         public override void Recycle()
         {
             this.AttackState = false;
             this.HurtState = false;
-            this.SetTarget(null);
+            this.Team.SetTarget(null);
             this.gameObject.SetActive(false);
         }
 

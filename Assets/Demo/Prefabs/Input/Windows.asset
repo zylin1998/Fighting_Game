@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0ee3f5157f241bf4d8d2bfd81958665f, type: 3}
   m_Name: Windows
   m_EditorClassIdentifier: 
-  _Platform: 2
+  _Platform: 0700000002000000100000000d0000000d000000
   _Axes:
   - {fileID: 11400000, guid: b2fbde09c65db1549b21c041fd81462d, type: 2}
   - {fileID: 11400000, guid: c5a8a24237579cf49ab0ea4076c3afe4, type: 2}

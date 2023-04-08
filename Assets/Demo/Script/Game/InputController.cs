@@ -4,7 +4,7 @@ using UnityEngine;
 using Custom.InputSystem;
 using Custom;
 using Custom.Role;
-using Custom.Battle;
+using Custom.Events;
 
 namespace FightingGameDemo
 {
@@ -49,7 +49,7 @@ namespace FightingGameDemo
 
         public void BeginAction() 
         {
-            this.Role = BattleManager.Allies[0];
+            this.Role = DemoBattleRule.Player;
         }
 
         #endregion

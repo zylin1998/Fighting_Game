@@ -4,6 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using Custom.Role;
+using Custom.Events;
 
 namespace FightingGameDemo.Role
 {
@@ -13,11 +14,9 @@ namespace FightingGameDemo.Role
         {
             this.Rigidbody = this.GetComponent<Rigidbody2D>();
             this.Animator = this.GetComponentInChildren<Animator>();
+            this._Team = this.GetComponent<RoleTeam>();
 
             if (this.Animator) { this.AnimCheck = new AnimationCheck(this.Animator); }
-
-            this._TeamState = IRole.ETeamState.Ally;
-            this.gameObject.layer = LayerMask.NameToLayer("Player");
 
             this.Data = RoleStorage.GetData(this.ID);
 
@@ -70,24 +69,6 @@ namespace FightingGameDemo.Role
 
         #endregion
 
-        #region IHurtAction
-
-        public override void Hurt() 
-        {
-            if (this.IsDead) { this.Death(); }
-        }
-
-        #endregion
-
-        #region IDeathAction
-
-        public override void Death()
-        {
-            this.gameObject.SetActive(false);
-        }
-
-        #endregion
-
         #region IFlipAction
 
         public override IFlipAction.EFlipSide FlipSide => this.transform.localScale.x > 0 ? IFlipAction.EFlipSide.Left : IFlipAction.EFlipSide.Right;
@@ -109,6 +90,9 @@ namespace FightingGameDemo.Role
         public override void Spawn<TData>(TData data)
         {
             this.gameObject.SetActive(true);
+
+            this._Team.SetTeam(RoleTeam.ETeamState.Ally);
+            this.gameObject.layer = LayerMask.NameToLayer("Player");
         }
 
         public override void Recycle()

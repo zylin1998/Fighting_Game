@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
 using Custom;
-using Custom.Battle;
+using Custom.Events;
 
 namespace FightingGameDemo
 {
@@ -12,7 +12,7 @@ namespace FightingGameDemo
         [SerializeField]
         private Text _Score;
 
-        private string format = "{0, 3}/{1, 3}";
+        private string format = "{0, 3}/{1, -3}";
 
         private void Awake()
         {
@@ -21,7 +21,7 @@ namespace FightingGameDemo
 
         public void ScoreUpdate() 
         {
-            if (BattleManager.Detail.Rule is DemoBattleRule rule) 
+            if (EventManager.Detail.Rule is DemoBattleRule rule) 
             {
                 this._Score.text = string.Format(this.format, rule.Current, rule.Score);
             }
@@ -31,7 +31,9 @@ namespace FightingGameDemo
 
         public void BeforeBegin() 
         {
-            BattleManager.AddEvent(BattleManager.BattleEvent.EEventType.EnemySlaved, (role) => this.ScoreUpdate());
+            EventManager.AddEvent("Enemy Slaved", (role) => this.ScoreUpdate());
+
+            this._Score.text = string.Format(this.format, 0, 0);
         }
 
         public void BeginAction()
@@ -40,5 +42,10 @@ namespace FightingGameDemo
         }
 
         #endregion
+
+        private void OnDestroy()
+        {
+            EventManager.RemoveEvent("Enemy Slaved", (role) => this.ScoreUpdate());
+        }
     }
 }
