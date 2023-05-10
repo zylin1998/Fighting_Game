@@ -18,7 +18,7 @@ public class SliderSlot : Slot
     {
         if (content is SliderContent slider) 
         {
-            this._Content = slider;
+            this.Content = slider;
             this.Name.text = slider.Name;
 
             if (slider is ISlotFilling filling) { filling.Filling(this); }
@@ -29,7 +29,7 @@ public class SliderSlot : Slot
 
     public override void UpdateSlot()
     {
-        if (this._Content is SliderContent slider)
+        if (this.Content is SliderContent slider)
         {
             this._Rate.text = string.Format("{0}", slider.Rate * 5);
         }
@@ -37,7 +37,7 @@ public class SliderSlot : Slot
 
     public override void ClearSlot()
     {
-        this._Content = null;
+        this.Content = null;
         this._Name.text = "???";
         this._Rate.text = "0";
     }

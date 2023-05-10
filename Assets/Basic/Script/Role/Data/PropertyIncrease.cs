@@ -4,8 +4,8 @@ using UnityEngine;
 
 namespace Custom.Role
 {
-    [CreateAssetMenu(fileName = "Role Data", menuName = "Role Data/Role", order = 1)]
-    public class RoleData : ScriptableObject
+    [CreateAssetMenu(fileName = "Property Increase", menuName = "Property/Increase", order = 1)]
+    public class PropertyIncrease : ScriptableObject
     {
         [SerializeField]
         private string _ID;
@@ -34,21 +34,31 @@ namespace Custom.Role
             [SerializeField]
             private float _Slope;
             [SerializeField]
-            private bool _FillAmount;
+            private float _Limit;
+            [SerializeField, Range(0f, 1f)]
+            private float _FillAmount;
 
             public string PropertyName => this._PropertyName;
             public float Init => this._Init;
             public float Slope => this._Slope;
-            public bool FillAmount => this._FillAmount;
+            public float Limit => this._Limit;
+            public float FillAmount => this._FillAmount;
 
-            public float GetValue(int value) => this._Init * (1f + this._Slope * 0.01f * (value - 1));
+            public float GetValue(int value)
+            {
+                var temp = this._Init * (1f + this._Slope * 0.01f * (value - 1));
 
-            public Property GetProperty(int value) 
+                if (this._Limit == 0) { return temp; }
+
+                return temp <= this._Limit ? temp : this._Limit;
+            }
+
+            public FloatProperty GetProperty(int value) 
             {
                 var pValue = this.GetValue(value);
                 var pRange = new Vector2(0, pValue);
 
-                return new Property(this._PropertyName, this._FillAmount ? pValue : 0, pRange);
+                return new FloatProperty(this._PropertyName, this._FillAmount * pValue, pRange);
             }
         }
 
@@ -64,11 +74,11 @@ namespace Custom.Role
             public List<IncreaseValue> Properties => this._Properties;
             public IncreaseValue this[string name] => this._Properties.Find(p => p.PropertyName == name);
 
-            public PropertyList GetProperty(int value) 
+            public FloatPropertyList GetProperty(int value) 
             {
                 var properties = this._Properties.ConvertAll(c => c.GetProperty(value));
 
-                return new PropertyList(this._GroupName, properties);
+                return new FloatPropertyList(this._GroupName, properties);
             }
         }
 
@@ -80,13 +90,13 @@ namespace Custom.Role
         public struct Value
         {
             [SerializeField]
-            private List<PropertyList> _PropertyList;
+            private List<FloatPropertyList> _PropertyList;
 
-            public List<PropertyList> PropertyList => this._PropertyList;
+            public List<FloatPropertyList> PropertyList => this._PropertyList;
 
-            public Value(IEnumerable<PropertyList> list) 
+            public Value(IEnumerable<FloatPropertyList> list) 
             {
-                this._PropertyList = new List<PropertyList>(list);
+                this._PropertyList = new List<FloatPropertyList>(list);
             }
         }
 

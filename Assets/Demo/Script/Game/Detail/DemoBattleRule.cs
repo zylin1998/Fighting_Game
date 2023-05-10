@@ -32,9 +32,9 @@ namespace FightingGameDemo
 
             EventManager.AddEvent("Enemy Slaved", (variable) =>
             {
-                if (variable is RoleSlaveVariable slave)
+                if (variable is IRoleGiver slave)
                 {
-                    Enemies.Remove(slave.Slaved);
+                    Enemies.Remove(slave.To);
                 }
             });
 

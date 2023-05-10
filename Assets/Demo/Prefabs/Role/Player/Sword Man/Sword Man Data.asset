@@ -19,26 +19,32 @@ MonoBehaviour:
     - _PropertyName: Level
       _Init: 1
       _Slope: 100
+      _Limit: 100
       _FillAmount: 1
     - _PropertyName: Exp
       _Init: 250
       _Slope: 50
+      _Limit: 0
       _FillAmount: 0
   - _GroupName: Health
     _Properties:
     - _PropertyName: HP
       _Init: 150
       _Slope: 25
+      _Limit: 0
       _FillAmount: 1
     - _PropertyName: MP
       _Init: 100
       _Slope: 15
+      _Limit: 0
       _FillAmount: 1
     - _PropertyName: Damage
       _Init: 25
       _Slope: 20
+      _Limit: 0
       _FillAmount: 1
     - _PropertyName: Defend
       _Init: 15
       _Slope: 10
+      _Limit: 0
       _FillAmount: 1

@@ -51,11 +51,11 @@ namespace Custom.Role
             {
                 var damage = this.Damage;
                 var healthTarget = "HP";
-                var healthType = PropertyVariable.EValueType.Reduce;
+                var healthType = EValueType.Reduce;
                 var from = this.Detail.Role.Convert<RoleBasic>();
                 var to = role;
                 
-                var variable = new PropertyVariable(healthTarget, damage, healthType, from, to);
+                var variable = new RolePropertyVariable(healthTarget, damage, healthType, from, to);
 
                 role.Hurt(variable);
             }

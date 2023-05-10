@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace Custom
 {
@@ -9,18 +8,20 @@ namespace Custom
     {
         public static List<SingletonList> List { get; private set; }
 
+        private static Transform root;
+        public static Transform Root 
+        {
+            get 
+            {
+                if (!root) { root = FindObjectOfType<SingletonCollect>().transform; }
+
+                return root;
+            }
+        }
+
         private void Awake()
         {
             DontDestroyOnLoad(this.gameObject);
-
-            if (List == null)
-            {
-                List = new List<SingletonList>()
-                {
-                      new SingletonList(EDestroyType.Destroy)
-                    , new SingletonList(EDestroyType.DontDestroy)
-                };
-            }
 
             this._List = List;
         }
@@ -30,23 +31,7 @@ namespace Custom
 
         #region Instance Management
 
-        internal static Instance AddInstance<TInstance>(Singleton<TInstance>.Demand demand) where TInstance : MonoBehaviour 
-        {
-            if (List == null) 
-            {
-                List = new List<SingletonList>()
-                {
-                      new SingletonList(EDestroyType.Destroy)
-                    , new SingletonList(EDestroyType.DontDestroy)
-                };
-            }
-
-            var destroy = demand.DestroyType;
-            
-            return List.Find(l => l.DestroyType == destroy).AddInstance(demand);
-        }
-
-        internal static bool AddInstance(Instance instance, EDestroyType destroyType) 
+        private static void Init() 
         {
             if (List == null)
             {
@@ -55,7 +40,25 @@ namespace Custom
                       new SingletonList(EDestroyType.Destroy)
                     , new SingletonList(EDestroyType.DontDestroy)
                 };
+
+                root = new GameObject("SingletonCollect", typeof(SingletonCollect)).transform;
+
+                DontDestroyOnLoad(Root.gameObject);
             }
+        }
+
+        internal static Instance AddInstance<TInstance>(Singleton<TInstance>.Demand demand) where TInstance : MonoBehaviour 
+        {
+            Init();
+
+            var destroy = demand.DestroyType;
+            
+            return List.Find(l => l.DestroyType == destroy).AddInstance(demand);
+        }
+
+        internal static bool AddInstance(Instance instance, EDestroyType destroyType) 
+        {
+            Init();
 
             return List.Find(l => l.DestroyType == destroyType).AddInstance(instance, destroyType); 
         }
@@ -119,7 +122,7 @@ namespace Custom
 
                     if (demand.DestroyType == EDestroyType.DontDestroy) 
                     {
-                        DontDestroyOnLoad(prefab);
+                        prefab.transform.SetParent(Root);
                     }
 
                     instance = new Instance(prefab, component);
@@ -145,7 +148,7 @@ namespace Custom
                 {
                     if (destroyType == EDestroyType.DontDestroy)
                     {
-                        DontDestroyOnLoad(instance.Prefab);
+                        instance.Prefab.transform.SetParent(Root);
                     }
 
                     this._Instances.Add(instance);
@@ -234,6 +237,11 @@ namespace Custom
             SingletonCollect.RemoveInstance<TInstance>();
         }
 
+        public static TType GetInstance<TType>() where TType : TInstance
+        {
+            return Instance is TType instance ? instance : default(TType);
+        }
+
         internal struct Demand 
         {
             public string Name { get; private set; }
@@ -264,6 +272,7 @@ namespace Custom
 
         public bool IsEmpty => this._Prefab == null || this._Component == null;
 
+        public Instance(Component instance) : this(instance.gameObject, instance) { }
         public Instance(GameObject prefab, Component instance)
         {
             this._Prefab = prefab;

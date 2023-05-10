@@ -15,11 +15,11 @@ namespace Custom.Role
             [SerializeField]
             private GameObject _Prefab;
             [SerializeField]
-            private RoleData _RoleData;
+            private PropertyIncrease _RoleData;
 
             public IRole Role => this._Prefab.GetComponent<IRole>();
             public GameObject Prefab => this._Prefab;
-            public RoleData RoleData => this._RoleData;
+            public PropertyIncrease RoleData => this._RoleData;
         }
 
         #endregion

@@ -18,7 +18,7 @@ namespace FightingGameDemo.Role
 
             if (this.Animator) { this.AnimCheck = new AnimationCheck(this.Animator); }
 
-            this.Data = RoleStorage.GetData(this.ID);
+            this.Data = RoleStorage.GetData(this._RoleName);
 
             this.Initialize();
         }

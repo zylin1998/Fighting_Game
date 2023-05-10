@@ -38,6 +38,7 @@ namespace Custom
         }
 
         public System.Action<TimeClient.DegreeTime> EndCallBack { get; set; }
+        public System.Action<TimeClient.DegreeTime> CycleCallBack { get; set; }
 
         private Coroutine Coroutine { get; set; }
 
@@ -62,6 +63,8 @@ namespace Custom
                 var time = this._Frequency <= 0 ? Time.deltaTime : this._Frequency;
                 
                 this._LeftTime = Mathf.Clamp(this._LeftTime - time, 0f, this._InitTime);
+
+                this.CycleCallBack?.Invoke(this.LeftTime);
 
                 yield return this._Frequency <= 0 ? null : new WaitForSeconds(this._Frequency);
             }

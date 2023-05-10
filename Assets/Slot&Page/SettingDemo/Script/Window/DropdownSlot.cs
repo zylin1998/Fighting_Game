@@ -29,9 +29,9 @@ public class DropdownSlot : Slot
 
     public override void UpdateSlot()
     {
-        this._Name.text = this._Content.Name;
+        this._Name.text = this.Content.Name;
 
-        if (this._Content is ISlotFilling filling) 
+        if (this.Content is ISlotFilling filling) 
         {
             filling.Filling(this);
         }

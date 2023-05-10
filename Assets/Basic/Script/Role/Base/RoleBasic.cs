@@ -14,7 +14,7 @@ namespace Custom.Role
         public Rigidbody2D Rigidbody { get; protected set; }
         public Animator Animator { get; protected set; }
         public AnimationCheck AnimCheck { get; protected set; }
-        public RoleData Data { get; protected set; }
+        public PropertyIncrease Data { get; protected set; }
 
         #region IRole
 
@@ -48,18 +48,35 @@ namespace Custom.Role
 
         public abstract void Move(Vector2 direct, bool sprint);
 
-        public virtual void Hurt(PropertyVariable variable) 
+        public virtual void Hurt<TProperty>(TProperty property) where TProperty : IProperty<float>
         {
             if (this.IsDead) { return; }
 
-            EventManager.EventInvoke(string.Format("{0} Hurt", this._Team.TeamState), variable);
+            var injure = this._RoleProperty["Health"].ValueChange(property, (p, v) => v / (1 + (p["Defend"].Value / 100)));
 
-            if (this.IsDead) { this.Death(new RoleSlaveVariable(variable.To, variable.From)); }
+            if (property is IVariable variable)
+            {
+                EventManager.EventInvoke(string.Format("{0} Hurt", this._Team.TeamState), variable);
+            }
+
+            if (this.IsDead)
+            {
+                var death = property is IRoleGiver roleGiver ? roleGiver : default(IRoleGiver);
+
+                this.Death(death);
+            }
         }
 
-        public virtual void Death(RoleSlaveVariable variable) 
+        public virtual void Death<TRoleGiver>(TRoleGiver roleGiver) where TRoleGiver : IRoleGiver 
         {
             if (!this.IsDead) { return; }
+
+            if (this._Team.TeamState == RoleTeam.ETeamState.Enemy)
+            {
+                EventManager.GetReward(this.Team.DefeatedReward);
+            }
+
+            var variable = roleGiver is IVariable v ? v : default(IVariable);
 
             var animState = "Death";
             this.Animator.Play(animState);
@@ -89,11 +106,16 @@ namespace Custom.Role
             StartCoroutine(enumerator);
         }
 
+        public TProperty HealthChange<TProperty>(TProperty property) where TProperty :IProperty<float> 
+        {
+            return this._RoleProperty["Health"].ValueChange(property);
+        }
+
         #endregion
 
         #region RoleState
 
-        public bool IsDead => this.RoleProperty["Health"]["HP"].Value == 0; 
+        public virtual bool IsDead => this.RoleProperty["Health"]["HP"].Value == 0; 
         public virtual bool IsMaxLevel { get; }
         public virtual bool AttackState { get; protected set; }
         public virtual bool HurtState { get; protected set; }
@@ -152,10 +174,6 @@ namespace Custom.Role
 
         #endregion
 
-        #region IPackableObject
-
-        public string ID => this._RoleName;
-        
         public virtual void Initialize()
         {
             var value = this.Data.GetValue(1);
@@ -172,11 +190,11 @@ namespace Custom.Role
 
             if (data is RoleProperty property) 
             {
-                this._RoleProperty = property;
+                if (this._RoleProperty == null) { this._RoleProperty = new RoleProperty(); }
+
+                this._RoleProperty.SetValue(property);
             }
         }
-
-        #endregion
 
         #region IPoolItem
 
@@ -184,127 +202,34 @@ namespace Custom.Role
         {
             data.Spawn(this);
         }
+
         public abstract void Recycle();
 
         #endregion
     }
 
-    #region IPack
+    #region IBuffer
 
-    [Serializable]
-    public struct HealthPack : IPack, IHealth
+    public interface IBuffer 
     {
-        [SerializeField]
-        private float _HP;
-        [SerializeField]
-        private float _MP;
-        [SerializeField]
-        private float _Damage;
-        [SerializeField]
-        private float _Defend;
-
-        public float HP => this._HP;
-        public float MP => this._MP;
-        public float Damage => this._Damage;
-        public float Defend => this._Defend;
-        public bool IsDead => this.HP == 0;
-
-        #region Construction
-
-        public HealthPack(IHealth health) : this(health.HP, health.MP, health.Damage, health.Defend)
-        {
-
-        }
-
-        public HealthPack(float hp, float mp, float damage, float defend) 
-        {
-            this._HP = hp;
-            this._MP = mp;
-            this._Damage = damage;
-            this._Defend = defend;
-        }
-
-        #endregion
-
-        public void SetHP(float value) { this._HP = value; }
-        public void SetMP(float value) { this._MP = value; }
-        public void SetDamage(float value) { this._Damage = value; }
-        public void SetDefend(float value) { this._Defend = value; }
-
-        #region IPack
-
-        public IPack Packed<TData>(TData data)
-        {
-            if (data is IHealth health) 
-            {
-                this._HP = health.HP;
-                this._MP = health.MP;
-                this._Damage = health.Damage;
-                this._Defend = health.Defend;
-                return this;
-            }
-
-            return null;
-        }
-
-        #endregion
-    }
-
-    [Serializable]
-    public struct LevelPack : IPack, ILevel 
-    {
-        [SerializeField]
-        private int _Level;
-        [SerializeField]
-        private float _Exp;
-
-        public int Level => this._Level;
-        public float Exp => this._Exp;
-
-        #region Construction
-
-        public LevelPack(ILevel level) : this(level.Level, level.Exp)
-        {
-
-        }
-
-        public LevelPack(int level, float exp) 
-        {
-            this._Level = level;
-            this._Exp = exp;
-        }
-
-        #endregion
-
-        #region IPack
-
-        public IPack Packed<TData>(TData data) 
-        {
-            if (data is ILevel level) 
-            {
-                this._Level = level.Level;
-                this._Exp = level.Exp;
-
-                return this;
-            }
-
-            return null;
-        }
-
-        #endregion
-
-        public void SetLevel(int value) { this._Level = value; }
-        public void SetExp(int value) { this._Exp = value; }
-    }
-
-    #endregion
-
-    #region IHealthBuffer
-
-    public interface IHealthBuffer 
-    {
+        public RoleBasic Role { get; protected set; }
+        public string PropertyName { get; }
         public EBuffType BuffType { get; }
         public CountDownTimer Timer { get; }
+
+        public void Invoke() 
+        {
+            this.Timer.CycleCallBack = this.Cycle;
+
+            this.Timer.Start();
+        }
+
+        public void SetRole(RoleBasic role) 
+        {
+            this.Role = role;
+        }
+
+        public void Cycle(TimeClient.DegreeTime time);
 
         [Serializable]
         public enum EBuffType 
@@ -315,27 +240,35 @@ namespace Custom.Role
         }
     }
 
+    [SerializeField]
+    public abstract class Buffer : IBuffer
+    {
+        [SerializeField]
+        private RoleBasic _Role;
+        [SerializeField]
+        protected string _PropertyName;
+        [SerializeField]
+        protected IBuffer.EBuffType _BuffType;
+        [SerializeField]
+        protected CountDownTimer _Timer;
+
+        RoleBasic IBuffer.Role 
+        {
+            get => this._Role; 
+
+            set => this._Role = value; 
+        }
+
+        public string PropertyName => this._PropertyName;
+        public IBuffer.EBuffType BuffType => this._BuffType;
+        public CountDownTimer Timer => this._Timer;
+
+        public abstract void Cycle(TimeClient.DegreeTime time);
+    }
+
     #endregion
 
     #region Variable
-
-    [Serializable]
-    public struct RoleSlaveVariable : IVariable
-    {
-        [SerializeField]
-        private RoleBasic _Slaved;
-        [SerializeField]
-        private RoleBasic _Killed;
-
-        public RoleBasic Slaved => this._Slaved;
-        public RoleBasic Killed => this._Killed;
-
-        public RoleSlaveVariable(RoleBasic slaved, RoleBasic killed)
-        {
-            this._Slaved = slaved;
-            this._Killed = killed;
-        }
-    }
 
     [SerializeField]
     public struct RoleVariable : IVariable
@@ -349,6 +282,75 @@ namespace Custom.Role
         {
             this._Role = role;
         }
+    }
+
+    [Serializable]
+    public struct RoleGiverVariable : IRoleGiver, IVariable
+    {
+        [SerializeField]
+        private RoleBasic _From;
+        [SerializeField]
+        private RoleBasic _To;
+
+        public RoleBasic From => this._From;
+        public RoleBasic To => this._To;
+
+        public RoleGiverVariable(IRoleGiver roleGiver) : this(roleGiver.From, roleGiver.To)
+        {
+
+        }
+
+        public RoleGiverVariable(RoleBasic killed, RoleBasic slaved)
+        {
+            this._From = slaved;
+            this._To = killed;
+        }
+    }
+
+    [Serializable]
+    public struct RolePropertyVariable : IProperty<float>, IRoleGiver, IVariable
+    {
+        [SerializeField]
+        private string _Name;
+        [SerializeField]
+        private float _Value;
+        [SerializeField]
+        private RoleBasic _From;
+        [SerializeField]
+        private RoleBasic _To;
+        [SerializeField]
+        private EValueType _ValueType;
+
+        public string Name => this._Name;
+        public float Value => this._Value;
+        public EValueType ValueType => this._ValueType;
+        public RoleBasic From => this._From;
+        public RoleBasic To => this._To;
+
+        public RolePropertyVariable(string name, float value, EValueType valueType, RoleBasic from, RoleBasic to)
+        {
+            this._Name = name;
+            this._Value = value;
+            this._ValueType = valueType;
+            this._From = from;
+            this._To = to;
+        }
+
+        public RolePropertyVariable(IProperty<float> property, IRoleGiver giver) : this(property.Name, property.Value, property.ValueType, giver.From, giver.To)
+        {
+
+        }
+
+        public void SetValue(float value)
+        {
+            this._Value = value;
+        }
+    }
+
+    public interface IRoleGiver 
+    {
+        public RoleBasic From { get; }
+        public RoleBasic To { get; }
     }
 
     #endregion
@@ -401,14 +403,31 @@ namespace Custom.Role
     public class RoleProperty 
     {
         [SerializeField]
-        private List<PropertyList> _PropertyLists;
+        private List<FloatPropertyList> _PropertyLists;
 
-        public List<PropertyList> PropertyLists => this._PropertyLists;
-        public PropertyList this[string name] => this._PropertyLists.Find(p => p.ListName == name);
+        public List<FloatPropertyList> PropertyLists => this._PropertyLists;
+        public FloatPropertyList this[string name] => this._PropertyLists.Find(p => p.Category == name);
 
-        public RoleProperty(IEnumerable<PropertyList> list) 
+        public RoleProperty() : this(new FloatPropertyList[0] { })
         {
-            this._PropertyLists = new List<PropertyList>(list);
+            
+        }
+
+        public RoleProperty(IEnumerable<FloatPropertyList> list) 
+        {
+            this._PropertyLists = new List<FloatPropertyList>(list);
+        }
+
+        public void SetValue(RoleProperty property) 
+        {
+            property._PropertyLists.ForEach(p =>
+            {
+                var list = this[p.Category];
+
+                if (list != null) { list.SetProperty(p); }
+
+                else { this._PropertyLists.Add(p); }
+            });
         }
     }
 }

@@ -39,6 +39,8 @@ namespace FightingGameDemo
 
         public override void Invoke<TVariable>(TVariable role)
         {
+            EventManager.AddEvent("Battle End", (variable) => this._Timer.Stop());
+
             this._Timer.Start();
         }
 
@@ -50,7 +52,7 @@ namespace FightingGameDemo
             var onScene = DemoBattleRule.Enemies
                 .ConvertAll(c => (c.Team.DefeatedReward as EnemyDefeatedReward).Score)
                 .Sum();
-
+            
             if (amount > onScene) 
             {
                 if (this.normal.Count == 0)

@@ -24,7 +24,7 @@ namespace FightingGameDemo
 
         public void BarUpdate(Image bar, RoleBasic role) 
         {
-            this._HPBar.fillAmount = role.RoleProperty["Health"]["HP"].Normalized;
+            this._HPBar.fillAmount = role.RoleProperty["Health"].GetProperty<FloatProperty>("HP").Normalized;
         }
 
         public void LevelUpdate(RoleBasic role) 
@@ -38,14 +38,14 @@ namespace FightingGameDemo
         {
             EventManager.AddEvent("Ally Hurt", (variable) => 
             {
-                if (variable is PropertyVariable health)
+                if (variable is RolePropertyVariable health)
                 {
                     this.BarUpdate(this._HPBar, health.To);
                 }
             });
             EventManager.AddEvent("Ally Upgrade", (variable) =>
             {
-                if (variable is PropertyVariable health)
+                if (variable is RolePropertyVariable health)
                 {
                     this.LevelUpdate(health.To);
                 }

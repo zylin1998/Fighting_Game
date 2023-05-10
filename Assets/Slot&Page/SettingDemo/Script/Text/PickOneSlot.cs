@@ -19,7 +19,7 @@ public class PickOneSlot : Slot
     {
         if (content is PickOneRate rate) 
         {
-            this._Content = rate;
+            this.Content = rate;
             this._Name.text = content.Name;
 
             if (rate is ISlotFilling filling) { filling.Filling(this); }
@@ -30,7 +30,7 @@ public class PickOneSlot : Slot
 
     public override void UpdateSlot()
     {
-        if (this._Content is PickOneRate rate)
+        if (this.Content is PickOneRate rate)
         {
             if (rate.Rate == PickOneRate.ERate.Left) { this._Right.isOn = false; }
             if (rate.Rate == PickOneRate.ERate.Right) { this._Left.isOn = false; }

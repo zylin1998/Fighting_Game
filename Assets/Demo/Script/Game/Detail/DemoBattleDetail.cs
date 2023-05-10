@@ -29,7 +29,7 @@ namespace FightingGameDemo
             {
                 yield return null;
             }
-            
+
             EventManager.EventInvoke("Battle End");
             EventManager.GetReward(this.Reward);
         }

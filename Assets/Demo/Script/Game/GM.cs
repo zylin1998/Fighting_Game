@@ -19,9 +19,7 @@ namespace FightingGameDemo
                 return; 
             }
 
-            DontDestroyOnLoad(new GameObject("SingletonCollect", typeof(SingletonCollect)));
-
-            Singleton<GM>.CreateClient(new Instance(this.gameObject, this), EDestroyType.DontDestroy);
+            Singleton<GM>.CreateClient(new Instance(this), EDestroyType.DontDestroy);
             
             Singleton<TimeClient>.CreateClient(EDestroyType.DontDestroy);
             Singleton<RoleStorage>.CreateClient(EDestroyType.DontDestroy);

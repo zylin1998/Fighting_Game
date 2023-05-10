@@ -21,7 +21,7 @@ public class VolumnSlot : Slot
     {
         if (content is VolumnRate rate)
         {
-            this._Content = rate;
+            this.Content = rate;
             this._Name.text = this.Content.Name;
             
             if (this.Content is ISlotFilling filling) { filling.Filling(this); }

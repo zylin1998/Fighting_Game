@@ -47,7 +47,7 @@ namespace FightingGameDemo.Role
 
         #region IHurtAction
 
-        public override void Hurt(PropertyVariable variable)
+        public override void Hurt<TProperty>(TProperty variable)
         {
             base.Hurt(variable);
 

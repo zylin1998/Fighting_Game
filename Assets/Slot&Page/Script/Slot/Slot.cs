@@ -10,9 +10,6 @@ namespace Custom.Slot
     public abstract class Slot : MonoBehaviour, ISlot
     {
         [SerializeField]
-        protected SlotContent _Content;
-
-        [SerializeField]
         protected Image _Image;
         [SerializeField]
         protected Text _Name;
@@ -43,7 +40,7 @@ namespace Custom.Slot
         /// </summary>
         #region ISlot
 
-        public ISlotContent Content => this._Content;
+        public virtual ISlotContent Content { get; protected set; }
 
         public EventTrigger EventTrigger
         {
@@ -57,26 +54,26 @@ namespace Custom.Slot
 
         public virtual void SetSlot(ISlotContent content)
         {
-            this._Content = content as SlotContent;
+            this.Content = content;
 
             this.UpdateSlot();
         }
 
         public virtual void UpdateSlot()
         {
-            if (this._Content)
+            if (this.Content != null)
             {
-                this.Image.sprite = this._Content.Icon;
-                this.Name.text = this._Content.Name;
+                this.Image.sprite = this.Content.Icon;
+                this.Name.text = this.Content.Name;
             }
         }
 
         public virtual void ClearSlot()
         {
-            this._Content = null;
-
             this.Image.sprite = null;
             this.Name.text = "None";
+
+            this.Content = null;
         }
 
         #endregion

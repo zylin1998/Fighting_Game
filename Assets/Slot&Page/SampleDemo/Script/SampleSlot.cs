@@ -9,7 +9,7 @@ public class SampleSlot : Slot
     {
         if (content is SampleItem sample) 
         {
-            this._Content = sample;
+            this.Content = sample;
         }
 
         this.UpdateSlot();
@@ -19,6 +19,6 @@ public class SampleSlot : Slot
     {
         base.UpdateSlot();
 
-        this.gameObject.SetActive(this._Content);
+        this.gameObject.SetActive(this.Content != null);
     }
 }

@@ -1,37 +1,25 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using Custom.Role;
+using Custom.Item;
+using Custom;
 using Custom.Events;
-using Custom.DataPacked;
 
 namespace FightingGameDemo
 {
     [CreateAssetMenu(fileName = "Battle Reward", menuName = "Game/Reward/Battle Reward", order = 1)]
-    public class DemoReward : RewardAsset, IPack, IGetExp
+    public class DemoReward : RewardAsset
     {
         [SerializeField]
-        private float _Exp;
+        private List<ItemProperty> _Items;
 
-        public float Exp => this._Exp;
+        public List<ItemProperty> Items => this._Items;
 
         public override void GetReward()
         {
-            var player = DemoBattleRule.Player;
-
-            player.SetData<IGetExp>(this);
-            
-            EventManager.EventInvoke("Ally Upgrade", new RoleVariable(player));
+            this._Items.ForEach(i => Inventory.AddItem(i.Value, i.Count));
         }
 
-        public IPack Packed<TData>(TData data)
-        {
-            if (data is IGetExp exp)
-            {
-                this._Exp = exp.Exp;
-            }
-
-            return this;
-        }
+        public TItem GetItem<TItem>() where TItem : ItemBase => this._Items.Find(i => i is TItem) as TItem;
     }
 }

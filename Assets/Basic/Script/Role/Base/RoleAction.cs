@@ -25,12 +25,12 @@ namespace Custom.Role
     {
         public bool HurtState { get; }
 
-        public void Hurt(PropertyVariable variable);
+        public void Hurt<TProperty>(TProperty variable) where TProperty : IProperty<float>;
     }
 
     public interface IDeathAction 
     {
-        public void Death(RoleSlaveVariable variable);
+        public void Death<TRoleGiver>(TRoleGiver variable) where TRoleGiver : IRoleGiver;
     }
 
     public interface IAttackAction

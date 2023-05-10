@@ -12,4 +12,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34246c96517c28749b819664b6c10f74, type: 3}
   m_Name: Demo Reward
   m_EditorClassIdentifier: 
-  _Exp: 125
+  _Items:
+  - _Name: Apple
+    _Value: {fileID: 11400000, guid: 8b060ad30fe529546afed7d84990c457, type: 2}
+    _Count: 2
+  - _Name: Coin
+    _Value: {fileID: 11400000, guid: b39073639a3aa3149aa60209011b60c0, type: 2}
+    _Count: 100
+  - _Name: Exp
+    _Value: {fileID: 11400000, guid: 8b23f6dd71711754baf80e101595f747, type: 2}
+    _Count: 125

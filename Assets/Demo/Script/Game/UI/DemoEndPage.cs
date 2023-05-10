@@ -20,7 +20,7 @@ namespace FightingGameDemo
         [SerializeField]
         private Text _PassTime;
         [SerializeField]
-        private Text _Reward;
+        private List<RewardItemSlot> _Rewards;
 
         private IGameDetail detail;
         private DemoBattleRule rule;
@@ -42,13 +42,14 @@ namespace FightingGameDemo
                 var score = this.rule.Current;
                 var combo = this.detail.GetAction<ComboAction>().Combo;
                 var passTime = this.detail.GetAction<PassTimeAction>().GameTime.GetTime("{1}:{2, 4:F2}");
-                var reward = 0f;
+                var reward = (this.detail.Reward as DemoReward).Items;
 
                 if (rule.Fulfilled()) 
                 {
                     result = "Win";
 
-                    reward = (this.detail.Reward as DemoReward).Exp;
+                    int i = -1;
+                    reward.ForEach(r => this._Rewards[++i].SetSlot(r));
                 }
 
                 if (rule.Defeated()) { result = "Lose"; }
@@ -57,7 +58,6 @@ namespace FightingGameDemo
                 this._Score.text = string.Format("Score: {0}", score);
                 this._MaxCombo.text = string.Format("Combo: {0}", combo);
                 this._PassTime.text = string.Format("PassTime: {0}", passTime);
-                this._Reward.text = string.Format("Reward: {0}Exp", reward);
             }
         }
 

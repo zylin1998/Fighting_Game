@@ -15,9 +15,9 @@ MonoBehaviour:
   _GameEvents:
   - {fileID: 11400000, guid: 0f9e331c17fe49043b25db38f0f6ad9e, type: 2}
   - {fileID: 11400000, guid: a49a00d246e13814a915b55a359b3b7b, type: 2}
-  - {fileID: 11400000, guid: 84ac863139cdf364191c69d0c8bf7074, type: 2}
-  - {fileID: 11400000, guid: 066e1cf54ac4db047b39ab7502f0ea9f, type: 2}
+  - {fileID: 11400000, guid: fa146bc7744f03e46b79fc14141d0c93, type: 2}
+  - {fileID: 11400000, guid: 9b1192e24f6805e469e3755d314dc974, type: 2}
   - {fileID: 11400000, guid: 64524682df67e8b44be5c8baf35f70cc, type: 2}
-  - {fileID: 11400000, guid: 87e332cbbf318a24991ad95d96ea809c, type: 2}
+  - {fileID: 11400000, guid: 7406cbf1feff56748ac439dd0d529bdc, type: 2}
   - {fileID: 11400000, guid: de8f1a48c2435914490314b707e9dbf2, type: 2}
   - {fileID: 11400000, guid: 9e3346615b02cf040ac3105f5fd877fd, type: 2}

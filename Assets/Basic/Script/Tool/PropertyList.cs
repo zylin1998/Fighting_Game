@@ -5,100 +5,221 @@ using UnityEngine;
 namespace Custom
 {
     [System.Serializable]
-    public class PropertyList
+    public class PropertyList<TRetrieve, TValue>
     {
-        [SerializeField]
-        protected string _ListName;
-        [SerializeField]
-        protected List<Property> _Properties;
-
-        public string ListName => this._ListName;
-        public Property this[string name] => this._Properties.Find(p => p.PropertyName == name);
+        public virtual TRetrieve Category { get; protected set; }
+        public virtual List<Property<TValue>> Properties { get; protected set; }
+        public virtual Property<TValue> this[string name] => this.Properties.Find(p => p.Name == name);
 
         #region Constructor
 
-        public PropertyList() : this(string.Empty, new Property[0] { }) 
+        public PropertyList() : this(default(TRetrieve), new Property<TValue>[0] { }) 
         {
 
         }
 
-        public PropertyList(string name) : this(name, new Property[0] { }) 
+        public PropertyList(TRetrieve category) : this(category, new Property<TValue>[0] { }) 
         {
 
         }
 
-        public PropertyList(string name, IEnumerable<Property> properties) 
+        public PropertyList(TRetrieve category, IEnumerable<Property<TValue>> properties) 
         {
-            this._ListName = name;
-            this._Properties = new List<Property>(properties);
+            this.Category = category;
+            this.Properties = new List<Property<TValue>>(properties);
         }
 
         #endregion
 
-        public void SetValue(IEnumerable<Property> properties) 
+        public virtual void SetProperty(Property<TValue> property) 
+        {
+            var temp = this[property.Name];
+
+            if (temp != null) { temp.SetValue(property); }
+
+            else { this.Properties.Add(property); }
+        }
+
+        public void SetProperty(IEnumerable<Property<TValue>> properties)
         {
             foreach (var property in properties) 
             {
-                var temp = this[property.PropertyName];
-
-                if (temp != null) { temp.SetValue(property); }
-
-                else { this._Properties.Add(property); }
+                this.SetProperty(property);
             }
         }
 
-        public PropertyVariable ValueChange(PropertyVariable variable)
+        public void SetProperty(PropertyList<TRetrieve, TValue> propertyList) 
         {
-            var value = 0f;
+            this.SetProperty(propertyList.Properties);
+        }
 
-            var property = this[variable.ValueTarget];
+        public TProperty GetProperty<TProperty>(string name) where TProperty : Property<TValue> 
+        {
+            if(this[name] is TProperty property) { return property; }
 
-            if (variable.ValueType == PropertyVariable.EValueType.Increase)
-            {
-                value = property.Increase(variable.Value);
-            }
+            return default(TProperty);
+        }
 
-            if (variable.ValueType == PropertyVariable.EValueType.Reduce)
-            {
-                value = property.Reduce(variable.Value);
-            }
+        public virtual bool RemoveValue(Property<TValue> property) 
+        {
+            var p = this[property.Name];
 
-            return new PropertyVariable(variable.ValueTarget, value, variable.ValueType, variable.From, variable.To);
+            if (p == null) { return false; }
+
+            return this.Properties.Remove(p);
+        }
+
+        public TData ValueChange<TData>(TData variable) where TData : IProperty<TValue>
+        {
+            return ValueChange(variable, (p, v) => v);
+        }
+
+        public delegate TOutput Evaluate<TPropertyList, TOutput>(TPropertyList list, TOutput value) where TPropertyList : PropertyList<TRetrieve, TValue>;
+
+        public virtual TData ValueChange<TData>(TData variable, Evaluate<PropertyList<TRetrieve, TValue>, TValue> evaluate) where TData : IProperty<TValue>
+        {
+            var value = evaluate != null ? evaluate.Invoke(this, variable.Value) : variable.Value;
+
+            variable.SetValue(value);
+
+            return variable;
         }
     }
 
     [System.Serializable]
-    public class Property
+    public class Property<TValue> 
     {
         [SerializeField]
-        private string _PropertyName;
+        protected string _Name;
         [SerializeField]
-        private float _Value;
+        protected TValue _Value;
+
+        public string Name => this._Name;
+        public TValue Value => this._Value;
+
+        public Property(string name, TValue value) 
+        {
+            this._Name = name;
+            this._Value = value;
+        }
+
+        public virtual void SetValue<TProperty>(TProperty property) where TProperty : Property<TValue> 
+        {
+            if (this._Name == property._Name)
+            {
+                this._Value = property._Value;
+            }
+        }
+
+        public virtual void SetValue(TValue value) 
+        {
+            this._Value = value;
+        }
+    }
+
+    #region Float Property
+
+    [System.Serializable]
+    public class FloatPropertyList : PropertyList<string, float>
+    {
+        [SerializeField]
+        private string _Category;
+        [SerializeField]
+        private List<FloatProperty> _Properties;
+
+        public override string Category 
+        {
+            get => this._Category; 
+            
+            protected set => this._Category = value; 
+        }
+
+        public override List<Property<float>> Properties 
+        { 
+            get => this._Properties.ConvertAll(c => c as Property<float>);
+
+            protected set => this._Properties = value.ConvertAll(c => c as FloatProperty); 
+        }
+
+        public FloatPropertyList(string name, IEnumerable<FloatProperty> properties) : base(name, properties) { }
+
+        public override void SetProperty(Property<float> property)
+        {
+            if (property is FloatProperty p)
+            {
+                var temp = this[p.Name];
+
+                if (temp != null) { temp.SetValue(p); }
+
+                else { this._Properties.Add(p); }
+            }
+        }
+
+        public override bool RemoveValue(Property<float> property)
+        {
+            if (property is FloatProperty p)
+            {
+                var temp = this[p.Name];
+
+                if (temp == null) { return false; }
+
+                return this.Properties.Remove(p);
+            }
+
+            return false;
+        }
+
+        public override TData ValueChange<TData>(TData variable, Evaluate<PropertyList<string, float>, float> evaluate)
+        {
+            var value = 0f;
+
+            var property = this[variable.Name] as FloatProperty;
+            var temp = evaluate != null ? evaluate.Invoke(this, variable.Value) : variable.Value;
+
+            if (variable.ValueType == EValueType.Increase)
+            {
+                value = property.Increase(temp);
+            }
+
+            if (variable.ValueType == EValueType.Reduce)
+            {
+                value = property.Reduce(temp);
+            }
+
+            variable.SetValue(value);
+
+            return variable;
+        }
+    }
+
+    [System.Serializable]
+    public class FloatProperty : Property<float>
+    {
         [SerializeField]
         private Vector2 _Range;
 
-        public string PropertyName => this._PropertyName;
-        public float Value => this._Value;
         public Vector2 Range => this._Range;
 
         public float Normalized => this._Range != Vector2.zero ? this._Value / this._Range.y : 1f;
 
-        public Property(string name, float value, Vector2 range)
+        public FloatProperty(string name, float value, Vector2 range) : base(name, value)
         {
-            this._PropertyName = name;
-            this._Value = value;
             this._Range = range;
         }
 
-        public void SetValue(Property property) 
+        public override void SetValue<TProperty>(TProperty property)
         {
-            if (property.PropertyName == this._PropertyName) 
+            var p = property is FloatProperty temp ? temp : null;
+
+            if (p == null) { return; }
+
+            if (p.Name == this._Name) 
             {
-                this.SetValue(property.Value, property.Range);
+                this.SetValue(p.Value, p.Range);
             }
         }
 
-        public void SetValue(float value)
+        public override void SetValue(float value)
         {
             if (this._Range != Vector2.zero)
             {
@@ -154,40 +275,48 @@ namespace Custom
         }
     }
 
+    #endregion
+
+    public interface IProperty<TValue>
+    {
+        public string Name { get; }
+        public TValue Value { get; }
+        public EValueType ValueType { get; }
+
+        public void SetValue(TValue value);
+    }
+
     [System.Serializable]
-    public struct PropertyVariable : IVariable
+    public enum EValueType
+    {
+        Reduce = 0,
+        Increase = 1
+    }
+
+    [System.Serializable]
+    public struct FloatVariable : IProperty<float>, IVariable
     {
         [SerializeField]
-        private string _ValueTarget;
+        private string _Name;
         [SerializeField]
         private float _Value;
         [SerializeField]
-        private Role.RoleBasic _From;
-        [SerializeField]
-        private Role.RoleBasic _To;
-        [SerializeField]
         private EValueType _ValueType;
 
-        public string ValueTarget => this._ValueTarget;
+        public string Name => this._Name;
         public float Value => this._Value;
         public EValueType ValueType => this._ValueType;
-        public Role.RoleBasic From => this._From;
-        public Role.RoleBasic To => this._To;
-
-        public PropertyVariable(string valueTarget, float value, EValueType valueType, Role.RoleBasic from, Role.RoleBasic to)
+        
+        public FloatVariable(string valueTarget, float value, EValueType valueType)
         {
-            this._ValueTarget = valueTarget;
+            this._Name = valueTarget;
             this._Value = value;
             this._ValueType = valueType;
-            this._From = from;
-            this._To = to;
         }
 
-        [System.Serializable]
-        public enum EValueType
+        public void SetValue(float value) 
         {
-            Reduce = 0,
-            Increase = 1
+            this._Value = value;
         }
     }
 }

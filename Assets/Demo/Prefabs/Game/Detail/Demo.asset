@@ -18,7 +18,7 @@ MonoBehaviour:
   _Enemies:
   - _Role: Grave Robber
     _EnemyType: 1
-    _Level: 3
+    _Level: 1
   _GameActions:
   - {fileID: 11400000, guid: 621ee5c4f6f82064d88177138f0a6c96, type: 2}
   - {fileID: 11400000, guid: 0c9a568dead6cd44d86b90d29690bab3, type: 2}

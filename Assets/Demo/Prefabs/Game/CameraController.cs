@@ -15,7 +15,7 @@ namespace FightingGameDemo
 
         private void Awake()
         {
-            Singleton<CameraController>.CreateClient(new Instance(this.gameObject, this), EDestroyType.Destroy);
+            Singleton<CameraController>.CreateClient(new Instance(this), EDestroyType.Destroy);
 
             if (!this._Camera) 
             {

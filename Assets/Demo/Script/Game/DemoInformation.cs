@@ -37,7 +37,7 @@ namespace FightingGameDemo
 
         public override void BeforeBegin() 
         {
-            Singleton<DemoInformation>.CreateClient(new Instance(this.gameObject, this), EDestroyType.Destroy);
+            Singleton<DemoInformation>.CreateClient(new Instance(this), EDestroyType.Destroy);
 
             EventManager.AddEvent("Battle End", (variable) =>
             {
@@ -47,22 +47,22 @@ namespace FightingGameDemo
 
             EventManager.AddEvent("Ally Hurt", (variable) =>
             {
-                if (variable is PropertyVariable health) 
+                if (variable is IProperty<float> property) 
                 {
-                    if (health.ValueTarget == "HP" && health.ValueType == PropertyVariable.EValueType.Reduce) 
+                    if (property.Name == "HP" && property.ValueType == EValueType.Reduce) 
                     {
-                        this._RecieveDamage += health.Value;
+                        this._RecieveDamage += property.Value;
                     }
                 }
             });
 
             EventManager.AddEvent("Enemy Hurt", (variable) =>
             {
-                if (variable is PropertyVariable health)
+                if (variable is IProperty<float> property)
                 {
-                    if (health.ValueTarget == "HP" && health.ValueType == PropertyVariable.EValueType.Reduce)
+                    if (property.Name == "HP" && property.ValueType == EValueType.Reduce)
                     {
-                        this._CauseDamage += health.Value;
+                        this._CauseDamage += property.Value;
                     }
                 }
             });
