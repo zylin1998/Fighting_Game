@@ -1,0 +1,104 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31234eca510976347b1db57a75514c4f, type: 3}
+  m_Name: SwordManStates
+  m_EditorClassIdentifier: 
+  _Identity: SwordMan
+  _Setting:
+    _InitState: Idle
+    _IntegerReposits: []
+    _FloatReposits:
+    - Move
+    _BooleanReposits:
+    - Jump
+    - Attack
+    - Dash
+    - Sprint
+    - Hurt
+    - Death
+    _Transitions:
+    - _From: {fileID: 11400000, guid: ce4c9e7a44e5166469cec4e0ac9b2801, type: 2}
+      _ToStates:
+      - _To: {fileID: 11400000, guid: a351eb1d1e6005345a6f0c1175302805, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: ba159ed0cebf23e418d27b5177bb2334, type: 2}
+      - _To: {fileID: 11400000, guid: 62556669a69c99747b25f9dcfbe8312f, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: e5f21c33111247340a5247defd68f087, type: 2}
+      - _To: {fileID: 11400000, guid: 13c95b36c8ecae84ea58ed3d5429cd8b, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 18506648bc4625348b06cf74a9840c7f, type: 2}
+      - _To: {fileID: 11400000, guid: 98e05e01e7b1051428c442fd2a1b6bdf, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 9a4d1b5a913985745bb23a41a28434dc, type: 2}
+        - {fileID: 11400000, guid: ba159ed0cebf23e418d27b5177bb2334, type: 2}
+      - _To: {fileID: 11400000, guid: a6044e7105507ae48b9b413682f298a1, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 80fa304eade14d842bd068219f40ada7, type: 2}
+    - _From: {fileID: 11400000, guid: a351eb1d1e6005345a6f0c1175302805, type: 2}
+      _ToStates:
+      - _To: {fileID: 11400000, guid: ce4c9e7a44e5166469cec4e0ac9b2801, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: bb45e6ef4b87d034a8a638d92e64bf77, type: 2}
+      - _To: {fileID: 11400000, guid: 62556669a69c99747b25f9dcfbe8312f, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: e5f21c33111247340a5247defd68f087, type: 2}
+      - _To: {fileID: 11400000, guid: 13c95b36c8ecae84ea58ed3d5429cd8b, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 18506648bc4625348b06cf74a9840c7f, type: 2}
+      - _To: {fileID: 11400000, guid: 98e05e01e7b1051428c442fd2a1b6bdf, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 9a4d1b5a913985745bb23a41a28434dc, type: 2}
+        - {fileID: 11400000, guid: ba159ed0cebf23e418d27b5177bb2334, type: 2}
+      - _To: {fileID: 11400000, guid: a6044e7105507ae48b9b413682f298a1, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 80fa304eade14d842bd068219f40ada7, type: 2}
+    - _From: {fileID: 11400000, guid: 62556669a69c99747b25f9dcfbe8312f, type: 2}
+      _ToStates:
+      - _To: {fileID: 11400000, guid: ce4c9e7a44e5166469cec4e0ac9b2801, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: bb45e6ef4b87d034a8a638d92e64bf77, type: 2}
+        - {fileID: 11400000, guid: 542818dec2f46474fb0d5c4f2f061a7d, type: 2}
+      - _To: {fileID: 11400000, guid: a351eb1d1e6005345a6f0c1175302805, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 542818dec2f46474fb0d5c4f2f061a7d, type: 2}
+        - {fileID: 11400000, guid: ba159ed0cebf23e418d27b5177bb2334, type: 2}
+    - _From: {fileID: 11400000, guid: 13c95b36c8ecae84ea58ed3d5429cd8b, type: 2}
+      _ToStates:
+      - _To: {fileID: 11400000, guid: ce4c9e7a44e5166469cec4e0ac9b2801, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 40a0be06fe298c24dbdc29c754457f95, type: 2}
+        - {fileID: 11400000, guid: bb45e6ef4b87d034a8a638d92e64bf77, type: 2}
+      - _To: {fileID: 11400000, guid: a351eb1d1e6005345a6f0c1175302805, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 40a0be06fe298c24dbdc29c754457f95, type: 2}
+        - {fileID: 11400000, guid: ba159ed0cebf23e418d27b5177bb2334, type: 2}
+    - _From: {fileID: 11400000, guid: 98e05e01e7b1051428c442fd2a1b6bdf, type: 2}
+      _ToStates:
+      - _To: {fileID: 11400000, guid: ce4c9e7a44e5166469cec4e0ac9b2801, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 5a1f1a00b76c63d4db1804b32ab01995, type: 2}
+        - {fileID: 11400000, guid: bb45e6ef4b87d034a8a638d92e64bf77, type: 2}
+      - _To: {fileID: 11400000, guid: a351eb1d1e6005345a6f0c1175302805, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 5a1f1a00b76c63d4db1804b32ab01995, type: 2}
+        - {fileID: 11400000, guid: ba159ed0cebf23e418d27b5177bb2334, type: 2}
+    - _From: {fileID: 11400000, guid: a6044e7105507ae48b9b413682f298a1, type: 2}
+      _ToStates:
+      - _To: {fileID: 11400000, guid: ce4c9e7a44e5166469cec4e0ac9b2801, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 542818dec2f46474fb0d5c4f2f061a7d, type: 2}
+        - {fileID: 11400000, guid: bb45e6ef4b87d034a8a638d92e64bf77, type: 2}
+      - _To: {fileID: 11400000, guid: a351eb1d1e6005345a6f0c1175302805, type: 2}
+        _SubConditions:
+        - {fileID: 11400000, guid: 542818dec2f46474fb0d5c4f2f061a7d, type: 2}
+        - {fileID: 11400000, guid: ba159ed0cebf23e418d27b5177bb2334, type: 2}

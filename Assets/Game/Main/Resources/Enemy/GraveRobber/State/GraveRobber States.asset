@@ -1,0 +1,42 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 31234eca510976347b1db57a75514c4f, type: 3}
+  m_Name: GraveRobber States
+  m_EditorClassIdentifier: 
+  _Identity: GraveRobber
+  _InitState: Idle
+  _IntegerReposits: []
+  _FloatReposits:
+  - _Identity: Move
+    _Data: 0
+  - _Identity: StandStill
+    _Data: 0
+  _booleanReposits: []
+  _Transitions:
+  - _From: {fileID: 11400000, guid: 1dee7ca2df57b2e448074858a963b013, type: 2}
+    _ToStates:
+    - _To: {fileID: 11400000, guid: d2c4438ad227b9a41b691c1c9ac78431, type: 2}
+      _SubConditions:
+      - {fileID: 11400000, guid: f5e914c89c8bdeb4b8b821aa96c31bd1, type: 2}
+  - _From: {fileID: 11400000, guid: d2c4438ad227b9a41b691c1c9ac78431, type: 2}
+    _ToStates:
+    - _To: {fileID: 11400000, guid: eec0c87c78dbe844f99c0c629501cee7, type: 2}
+      _SubConditions:
+      - {fileID: 11400000, guid: 5e5bf82f74c163d4aa0e59128aeaa81a, type: 2}
+  - _From: {fileID: 11400000, guid: eec0c87c78dbe844f99c0c629501cee7, type: 2}
+    _ToStates:
+    - _To: {fileID: 11400000, guid: d2c4438ad227b9a41b691c1c9ac78431, type: 2}
+      _SubConditions:
+      - {fileID: 11400000, guid: e14220cbe3b6d79488a565cc079cfd52, type: 2}
+    - _To: {fileID: 11400000, guid: d2c4438ad227b9a41b691c1c9ac78431, type: 2}
+      _SubConditions:
+      - {fileID: 11400000, guid: e14220cbe3b6d79488a565cc079cfd52, type: 2}
